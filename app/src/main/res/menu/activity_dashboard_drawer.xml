@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_add_travel"
+            android:icon="@drawable/ic_add_travel"
+            android:title="@string/add_new_travel" />
+        <item
+            android:id="@+id/database"
+            android:icon="@drawable/ic_card_travel"
+            android:title="Database" />
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/information"
+            android:title="@string/about" />
+        <item
+            android:id="@+id/nav_exit"
+            android:icon="@drawable/exit"
+            android:title="@string/exit" />
+    </group>
+
+</menu>

@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">Uallet</string>
+    <string name="app_slogan">Your travel wallet</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+
+    <string name="add_new_travel">Add new travel</string>
+    <string name="my_travels">My travels</string>
+    <string name="current_travel">Current travel</string>
+    <string name="budget">Budget</string>
+    <string name="spending">Spending</string>
+    <string name="balance">Balance</string>
+    <string name="country">Country</string>
+    <string name="done">Done</string>
+    <string name="location">Location</string>
+    <string name="beginnig">Beginning</string>
+    <string name="end">End</string>
+    <string name="inicial_budget_optional">Inicial budget (optional)</string>
+    <string name="add_money_to_wallet">Add money to wallet</string>
+    <string name="add_expense">Add expense</string>
+    <string name="history">History</string>
+    <string name="edit">Edit</string>
+    <string name="loading">Loading your Uallet...</string>
+    <string name="lets_start">Let\'s start!</string>
+    <string name="next">Next</string>
+    <string name="intro_1">Organize your money</string>
+    <string name="intro_1_a">You won\'t spend more than your budget anymore during your travel!</string>
+    <string name="intro_2">Have a travel expense history</string>
+    <string name="intro_2_a">You can check the expenses that you had in your last travels!</string>
+    <string name="success_insert">Data inserted successfully!</string>
+    <string name="error_insert">Error entering data!</string>
+    <string name="success_update">Data updated successfully!</string>
+    <string name="error_update">Error updating data!</string>
+    <string name="success_delete">Data deleted successfully!</string>
+    <string name="error_delete">Error deleting data!</string>
+    <string name="select">Select</string>
+    <string name="fill_fields">Fill out the empty fields.</string>
+    <string name="date_end_smaller_than_beginning">The beginning date must be less than the end date.</string>
+    <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
+    <string name="inicial_budget">Inicial Budget</string>
+    <string name="error_inicial_budget">Error inserting inicial budget!</string>
+    <string name="add_your_first_travel">Click here to add your first travel</string>
+    <string name="category">Category</string>
+    <string name="date">Date</string>
+    <string name="amount">Amount</string>
+    <string name="add">Add</string>
+    <string name="add_money">Add money</string>
+    <string name="description">Description</string>
+    <string name="income">Income</string>
+    <string name="delete">Delete</string>
+    <string name="confirm_delete_item">Are you sure about deleting this item?</string>
+    <string name="developer">Developer</string>
+    <string name="icons_authors">Icons authors</string>
+    <string name="about">About</string>
+    <string name="exit">Exit</string>
+    <string name="version">Version</string>
+    <string name="icons_authors_content">Icons made by Vectors Market, Popcorns Arts, Madebyoliver, Pixel Budha, Nikita Golubev and Prosymbols from http://www.flaticon.com is licensed by CC 3.0 BY.
+
+\n\nhttp://www.flaticon.com/authors/vectors-market
+\nhttp://www.flaticon.com/authors/popcorns-arts
+\nhttp://www.flaticon.com/authors/madebyoliver
+\nhttp://www.flaticon.com/authors/pixel-buddha
+\nhttp://www.flaticon.com/authors/nikita-golubev
+\nhttp://www.flaticon.com/authors/prosymbols
+\nhttp://www.flaticon.com/authors/freepik
+\nhttp://www.flaticon.com/authors/icomoon</string>
+
+</resources>
