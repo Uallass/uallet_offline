@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -46,7 +45,7 @@ import java.util.Locale;
 public class AddTravelActivity extends AppCompatActivity {
 
     private AppCompatActivity activity;
-    private FragmentManager fragmentManager;
+    private Locale travelCurrencyLocale;
 
     private Spinner spCountry;
     private EditText etLocation;
@@ -68,7 +67,6 @@ public class AddTravelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         this.activity = this;
-        this.fragmentManager = getSupportFragmentManager();
 
         travelController = new TravelController(getApplicationContext());
         countryController = new CountryController(getApplicationContext());
@@ -84,6 +82,8 @@ public class AddTravelActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        travelCurrencyLocale = Locale.getDefault();
 
         buildViews();
         setViews();
@@ -118,19 +118,19 @@ public class AddTravelActivity extends AppCompatActivity {
         etBeginning.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerHelper datePicker = new DatePickerHelper(etBeginning);
-                datePicker.show(fragmentManager, "");
+                DatePickerHelper datePicker = new DatePickerHelper(activity, etBeginning);
+                datePicker.createDialog().show();
             }
         });
         etEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerHelper datePicker = new DatePickerHelper(etEnd);
-                datePicker.show(fragmentManager, "");
+                DatePickerHelper datePicker = new DatePickerHelper(activity, etEnd);
+                datePicker.createDialog().show();
             }
         });
 
-        etInicialBudget.addTextChangedListener(new CurrencyTextWatcher(etInicialBudget));
+        etInicialBudget.addTextChangedListener(new CurrencyTextWatcher(etInicialBudget, travelCurrencyLocale));
         etInicialBudget.setText("0");
         // if it is editing a travel
         if(idTravel > 0) {
@@ -147,7 +147,11 @@ public class AddTravelActivity extends AppCompatActivity {
             etBeginning.setText(TextFormatter.formatDate(travel.getDateBeginning(), TipoDado.DATA));
             etEnd.setText(travel.getDateEnd() != null ? TextFormatter.formatDate(travel.getDateEnd(), TipoDado.DATA) : "");
 
-            etInicialBudget.setText(TextFormatter.formatCurrency(transactionController.loadInicialBudget(idTravel)));
+            try {
+                etInicialBudget.setText(TextFormatter.formatCurrencyFromDouble(transactionController.loadInicialBudget(idTravel), travelCurrencyLocale));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             etInicialBudget.setEnabled(false);
         } else {
             travel = new Travel();
@@ -210,7 +214,7 @@ public class AddTravelActivity extends AppCompatActivity {
 
         try {
             if(etInicialBudget.getText().toString().isEmpty() ||
-                    (TextFormatter.cleanCurrency(etInicialBudget.getText().toString(), Locale.getDefault()).equals(0))) {
+                    (TextFormatter.cleanCurrency(etInicialBudget.getText().toString()).equals(0))) {
                 isOk = false;
                 etInicialBudget.setBackgroundResource(backgroundHighlight);
             }
@@ -303,7 +307,7 @@ public class AddTravelActivity extends AppCompatActivity {
             transaction.setDescription(getResources().getString(R.string.inicial_budget));
             transaction.setDate(travel.getDateBeginning());
             try {
-                transaction.setValue(TextFormatter.cleanCurrency(etInicialBudget.getText().toString(), Locale.getDefault()).doubleValue());
+                transaction.setValue(TextFormatter.cleanCurrency(etInicialBudget.getText().toString()).doubleValue());
             } catch (ParseException e) {
                 e.printStackTrace();
             }

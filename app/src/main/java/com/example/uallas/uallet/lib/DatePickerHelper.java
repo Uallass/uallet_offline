@@ -3,10 +3,9 @@
  */
 package com.example.uallas.uallet.lib;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -20,19 +19,20 @@ import java.util.GregorianCalendar;
  * Created by Uallas on 17/06/2017.
  */
 
-public class DatePickerHelper extends AppCompatDialogFragment implements
+public class DatePickerHelper implements
 		DatePickerDialog.OnDateSetListener {
 
+	private Activity activity;
 	private EditText editText;
 
 	private boolean dateChanged;
 
-    public DatePickerHelper(EditText editText) {
-        this.editText = editText;
-    }
+	public DatePickerHelper(Activity activity, EditText editText) {
+		this.activity = activity;
+		this.editText = editText;
+	}
 
-	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
+	public Dialog createDialog() {
 
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
@@ -40,7 +40,7 @@ public class DatePickerHelper extends AppCompatDialogFragment implements
         int day = c.get(Calendar.DAY_OF_MONTH);
 
 		// Create a new instance of DatePickerDialog and return it
-		return new DatePickerDialog(getActivity(), this,
+		return new DatePickerDialog(activity, this,
                 year, month, day);
 	}
 

@@ -1,7 +1,6 @@
 package com.example.uallas.uallet.controller;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -23,8 +22,7 @@ import com.example.uallas.uallet.model.TipoDado;
 import com.example.uallas.uallet.model.Transaction;
 import com.example.uallas.uallet.model.TransactionGroup;
 
-import org.w3c.dom.Text;
-
+import java.text.ParseException;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,11 +35,13 @@ public class TravelHistoryAdapter extends BaseAdapter {
     private Context context;
     private List<TransactionGroup> transactions;
     private TravelHistoryListener listener;
+    private Locale travelCurrencyLocale;
 
     public TravelHistoryAdapter(Context context, List<TransactionGroup> transactions, TravelHistoryListener listener) {
         this.context = context;
         this.transactions = transactions;
         this.listener = listener;
+        this.travelCurrencyLocale = Locale.getDefault();
     }
 
     public static class ViewHolder {
@@ -109,14 +109,18 @@ public class TravelHistoryAdapter extends BaseAdapter {
             llParamsValue.setMargins(dpToPx(4), 0, 0, 0);
             TextView tvValue = new TextView(context);
             tvValue.setLayoutParams(llParamsValue);
-            if(transaction.getDirection().equals(Direction.INCOME) || transaction.getDirection().equals(Direction.INICIAL_BUDGET)) {
-                tvValue.setText("+ " + TextFormatter.formatCurrency(transaction.getValue()));
-                tvValue.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
-            } else {
-                tvValue.setText("- " + TextFormatter.formatCurrency(transaction.getValue()));
-                tvValue.setTextColor(context.getResources().getColor(R.color.redDark));
-            }
 
+            try {
+                if(transaction.getDirection().equals(Direction.INCOME) || transaction.getDirection().equals(Direction.INICIAL_BUDGET)) {
+                    tvValue.setText("+ " + TextFormatter.formatCurrencyFromDouble(transaction.getValue(), travelCurrencyLocale));
+                    tvValue.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
+                } else {
+                    tvValue.setText("- " + TextFormatter.formatCurrencyFromDouble(transaction.getValue(), travelCurrencyLocale));
+                    tvValue.setTextColor(context.getResources().getColor(R.color.redDark));
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             // llWrap is the row
             llRow.addView(ivCategory);
             llRow.addView(tvDescription);

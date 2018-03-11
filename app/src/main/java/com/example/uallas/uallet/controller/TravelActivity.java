@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -58,7 +57,7 @@ import java.util.Locale;
 public class TravelActivity extends AppCompatActivity implements TravelHistoryAdapter.TravelHistoryListener {
 
     private Activity activity;
-    private FragmentManager fragmentManager;
+    private Locale travelCurrencyLocale;
 
     private TextView tvLocation;
     private TextView tvBudget;
@@ -104,7 +103,6 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         super.onCreate(savedInstanceState);
 
         activity = this;
-        this.fragmentManager = getSupportFragmentManager();
         setContentView(R.layout.travel_activity);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -122,6 +120,8 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         }
 
         travel = travelController.loadById(idTravel);
+
+        travelCurrencyLocale = Locale.getDefault();
 
         buildViews();
         setViews();
@@ -147,13 +147,21 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         travelHistoryAdapter = new TravelHistoryAdapter(activity.getApplicationContext(), transactions, this);
         lvHistory.setAdapter(travelHistoryAdapter);
 
-        updateScreenData();
+        try {
+            updateScreenData();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         btAddExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 buildPopupExpense();
-                buildPopupExpenseView(false);
+                try {
+                    buildPopupExpenseView(false);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -161,7 +169,11 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
             @Override
             public void onClick(View view) {
                 buildPopupMoney();
-                buildPopupMoneyView(false);
+                try {
+                    buildPopupMoneyView(false);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -246,7 +258,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
 
     }
 
-    private void buildPopupMoneyView(final boolean editing) {
+    private void buildPopupMoneyView(final boolean editing) throws ParseException {
 
         etDateMoney = (EditText) layoutPopupAddMoney.findViewById(R.id.et_date);
         etAmountMoney = (EditText) layoutPopupAddMoney.findViewById(R.id.et_amount);
@@ -256,12 +268,12 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         etDateMoney.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerHelper datePicker = new DatePickerHelper(etDateMoney);
-                datePicker.show(fragmentManager, "");
+                DatePickerHelper datePicker = new DatePickerHelper(activity, etDateMoney);
+                datePicker.createDialog().show();
             }
         });
 
-        etAmountMoney.addTextChangedListener(new CurrencyTextWatcher(etAmountMoney));
+        etAmountMoney.addTextChangedListener(new CurrencyTextWatcher(etAmountMoney, travelCurrencyLocale));
 
         btSaveMoney.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -270,7 +282,11 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
                     prepareForSendingMoney(editing);
 
                     if(editing) {
-                        updateTransaction();
+                        try {
+                            updateTransaction();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         insertTransaction();
                     }
@@ -281,7 +297,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         });
 
         if(editing) {
-            etAmountMoney.setText(TextFormatter.formatCurrency(transaction.getValue()));
+            etAmountMoney.setText(TextFormatter.formatCurrencyFromDouble(transaction.getValue(), travelCurrencyLocale));
             etDescriptionMoney.setText(transaction.getDescription());
             etDateMoney.setText(TextFormatter.formatDate(transaction.getDate(), TipoDado.DATA));
         } else {
@@ -331,7 +347,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
 
     }
 
-    private void buildPopupExpenseView(final boolean editing) {
+    private void buildPopupExpenseView(final boolean editing) throws ParseException {
 
         spCategoryExpense = (Spinner) layoutPopupAddExpense.findViewById(R.id.sp_category);
         etDateExpense = (EditText) layoutPopupAddExpense.findViewById(R.id.et_date_expense);
@@ -346,12 +362,12 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         etDateExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerHelper datePicker = new DatePickerHelper(etDateExpense);
-                datePicker.show(fragmentManager, "");
+                DatePickerHelper datePicker = new DatePickerHelper(activity, etDateExpense);
+                datePicker.createDialog().show();
             }
         });
 
-        etAmountExpense.addTextChangedListener(new CurrencyTextWatcher(etAmountExpense));
+        etAmountExpense.addTextChangedListener(new CurrencyTextWatcher(etAmountExpense, travelCurrencyLocale));
 
         btSaveExpense.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -360,7 +376,11 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
                     prepareForSendingExpense(editing);
 
                     if(editing) {
-                        updateTransaction();
+                        try {
+                            updateTransaction();
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         insertTransaction();
                     }
@@ -376,7 +396,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
                     spCategoryExpense.setSelection(i);
                 }
             }
-            etAmountExpense.setText(TextFormatter.formatCurrency(transaction.getValue()));
+            etAmountExpense.setText(TextFormatter.formatCurrencyFromDouble(transaction.getValue(), travelCurrencyLocale));
             etDescriptionExpense.setText(transaction.getDescription());
             etDateExpense.setText(TextFormatter.formatDate(transaction.getDate(), TipoDado.DATA));
         } else {
@@ -401,7 +421,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
 
         try {
             if(etAmountExpense.getText().toString().isEmpty() ||
-                    TextFormatter.cleanCurrency(etAmountExpense.getText().toString(), Locale.getDefault()).equals(0)) {
+                    TextFormatter.cleanCurrency(etAmountExpense.getText().toString()).equals(0)) {
                 isOk = false;
                 etAmountExpense.setBackgroundResource(backgroundHighlight);
             }
@@ -443,7 +463,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         transaction.setDate(ParserHelper.parseDate(etDateExpense.getText().toString(), TipoDado.DATA));
         transaction.setDirection(Direction.OUTCOME);
         try {
-            transaction.setValue(TextFormatter.cleanCurrency(etAmountExpense.getText().toString(), Locale.getDefault()).doubleValue());
+            transaction.setValue(TextFormatter.cleanCurrency(etAmountExpense.getText().toString()));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -466,7 +486,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
 
         try {
             if(etAmountMoney.getText().toString().isEmpty() ||
-                    TextFormatter.cleanCurrency(etAmountMoney.getText().toString(), Locale.getDefault()).equals(0)) {
+                    TextFormatter.cleanCurrency(etAmountMoney.getText().toString()).equals(0)) {
                 isOk = false;
                 etAmountMoney.setBackgroundResource(backgroundHighlight);
             }
@@ -508,7 +528,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         transaction.setDate(ParserHelper.parseDate(etDateMoney.getText().toString(), TipoDado.DATA));
         transaction.setDirection(Direction.INCOME);
         try {
-            transaction.setValue(TextFormatter.cleanCurrency(etAmountMoney.getText().toString(), Locale.getDefault()).doubleValue());
+            transaction.setValue(TextFormatter.cleanCurrency(etAmountMoney.getText().toString()).doubleValue());
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -518,13 +538,17 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         Long returnId = transactionController.insert(transaction);
         if (returnId > -1) {
             Toast.makeText(getApplicationContext(), getText(R.string.success_insert), Toast.LENGTH_LONG).show();
-            updateScreenData();
+            try {
+                updateScreenData();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         } else {
             Toast.makeText(getApplicationContext(), getText(R.string.error_insert), Toast.LENGTH_LONG).show();
         }
     }
 
-    private void updateTransaction() {
+    private void updateTransaction() throws ParseException {
         int returnId = transactionController.update(transaction);
         if (returnId > -1) {
             Toast.makeText(getApplicationContext(), getText(R.string.success_update), Toast.LENGTH_LONG).show();
@@ -534,13 +558,13 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         }
     }
 
-    public void updateScreenData() {
+    public void updateScreenData() throws ParseException {
         Double budget = travelController.getBudget(travel.getId());
-        tvBudget.setText(TextFormatter.formatCurrency(budget));
+        tvBudget.setText(TextFormatter.formatCurrencyFromDouble(budget, travelCurrencyLocale));
         Double spending = travelController.getExpense(travel.getId());
-        tvSpending.setText(TextFormatter.formatCurrency(spending));
+        tvSpending.setText(TextFormatter.formatCurrencyFromDouble(spending, travelCurrencyLocale));
         Double balance = budget - spending;
-        tvBalance.setText(TextFormatter.formatCurrency(balance));
+        tvBalance.setText(TextFormatter.formatCurrencyFromDouble(balance, travelCurrencyLocale));
 
         organizeTransactions();
         travelHistoryAdapter.notifyDataSetChanged();
@@ -575,14 +599,22 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
     public void editIncome(Transaction transaction) {
         this.transaction = transaction;
         buildPopupMoney();
-        buildPopupMoneyView(true);
+        try {
+            buildPopupMoneyView(true);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void editOutcome(Transaction transaction) {
         this.transaction = transaction;
         buildPopupExpense();
-        buildPopupExpenseView(true);
+        try {
+            buildPopupExpenseView(true);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -594,7 +626,11 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
                         int result = transactionController.delete(transaction.getId());
                         if(result > -1) {
                             Toast.makeText(getApplicationContext(), getText(R.string.success_delete), Toast.LENGTH_LONG).show();
-                            updateScreenData();
+                            try {
+                                updateScreenData();
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             Toast.makeText(getApplicationContext(), getText(R.string.error_delete), Toast.LENGTH_LONG).show();
                         }

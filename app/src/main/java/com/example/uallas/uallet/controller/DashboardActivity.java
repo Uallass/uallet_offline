@@ -14,7 +14,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -32,7 +31,9 @@ import com.example.uallas.uallet.lib.TextFormatter;
 import com.example.uallas.uallet.model.Country;
 import com.example.uallas.uallet.model.Travel;
 
+import java.text.ParseException;
 import java.util.List;
+import java.util.Locale;
 
 public class DashboardActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -50,6 +51,7 @@ public class DashboardActivity extends AppCompatActivity
     private RelativeLayout rlCurrentTravel;
     private MyTravelsAdapter myTravelsAdapter;
     private List<Travel> travels;
+    private Locale travelCurrencyLocale;
 
     // Popup About views
     private PopupWindow popupAbout;
@@ -76,6 +78,8 @@ public class DashboardActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        travelCurrencyLocale = Locale.getDefault();
 
         buildViews();
         setViews();
@@ -109,12 +113,15 @@ public class DashboardActivity extends AppCompatActivity
             ivFlag.setImageResource(getResources().getIdentifier(country.getImageName(), "drawable", getPackageName()));
 
             Double budget = travelController.getBudget(travel.getId());
-            tvBudget.setText(TextFormatter.formatCurrency(budget));
-            Double spending = travelController.getExpense(travel.getId());
-            tvSpending.setText(TextFormatter.formatCurrency(spending));
-            Double balance = budget - spending;
-            tvBalance.setText(TextFormatter.formatCurrency(balance));
-
+            try {
+                tvBudget.setText(TextFormatter.formatCurrencyFromDouble(budget, travelCurrencyLocale));
+                Double spending = travelController.getExpense(travel.getId());
+                tvSpending.setText(TextFormatter.formatCurrencyFromDouble(spending, travelCurrencyLocale));
+                Double balance = budget - spending;
+                tvBalance.setText(TextFormatter.formatCurrencyFromDouble(balance, travelCurrencyLocale));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             cvCurrentTravel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
