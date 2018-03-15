@@ -25,6 +25,7 @@ import com.example.uallas.uallet.lib.CurrencyTextWatcher;
 import com.example.uallas.uallet.lib.DatePickerHelper;
 import com.example.uallas.uallet.lib.ParserHelper;
 import com.example.uallas.uallet.lib.TextFormatter;
+import com.example.uallas.uallet.lib.Utils;
 import com.example.uallas.uallet.model.Country;
 import com.example.uallas.uallet.model.Direction;
 import com.example.uallas.uallet.model.TipoDado;
@@ -288,6 +289,7 @@ public class AddTravelActivity extends AppCompatActivity {
         int returnId = travelController.update(travel);
         if (returnId > -1) {
             Toast.makeText(getApplicationContext(), getText(R.string.success_update), Toast.LENGTH_LONG).show();
+            Utils.updateWidget(activity);
             onBackPressed();
         } else {
             Toast.makeText(getApplicationContext(), getText(R.string.error_update), Toast.LENGTH_LONG).show();
@@ -318,6 +320,7 @@ public class AddTravelActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), getText(R.string.error_inicial_budget), Toast.LENGTH_LONG).show();
             }
 
+            Utils.updateWidget(activity);
             finish();
 
         } else {
@@ -331,5 +334,4 @@ public class AddTravelActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-
 }

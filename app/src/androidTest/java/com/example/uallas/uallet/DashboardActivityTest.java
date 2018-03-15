@@ -37,5 +37,5 @@ public class DashboardActivityTest {
             onView(withId(R.id.sp_country)).check(matches(isDisplayed()));
     }
 
-    
+
 }

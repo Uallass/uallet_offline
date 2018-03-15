@@ -21,7 +21,7 @@
             android:id="@+id/rl_no_travel_yet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/mountains_bg"
             android:gravity="center"
             android:padding="48dp">
 
@@ -47,21 +47,8 @@
             android:id="@+id/rl_current_travel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/mountains_light_bg"
             android:visibility="gone">
-
-            <!--<RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:alpha="0.3"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/rio" />
-
-            </RelativeLayout>-->
 
             <RelativeLayout
                 android:layout_width="match_parent"

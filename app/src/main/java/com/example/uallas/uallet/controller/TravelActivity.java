@@ -34,6 +34,7 @@ import com.example.uallas.uallet.lib.CurrencyTextWatcher;
 import com.example.uallas.uallet.lib.DatePickerHelper;
 import com.example.uallas.uallet.lib.ParserHelper;
 import com.example.uallas.uallet.lib.TextFormatter;
+import com.example.uallas.uallet.lib.Utils;
 import com.example.uallas.uallet.model.Category;
 import com.example.uallas.uallet.model.Country;
 import com.example.uallas.uallet.model.Direction;
@@ -192,11 +193,41 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.edit) {
             Intent intent = new Intent(getApplicationContext(), AddTravelActivity.class);
             intent.putExtra("idTravel", travel.getId());
             startActivity(intent);
+            return true;
+        }
+
+        if (id == R.id.delete) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage(getResources().getString(R.string.confirm_delete_item))
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            int result = travelController.delete(travel.getId());
+                            if(result > -1) {
+                                Toast.makeText(getApplicationContext(), getText(R.string.success_delete), Toast.LENGTH_LONG).show();
+                                try {
+                                    updateScreenData();
+                                    Utils.updateWidget(activity);
+                                    onBackPressed();
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                Toast.makeText(getApplicationContext(), getText(R.string.error_delete), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                        }
+                    });
+            builder.create();
+            builder.show();
+
             return true;
         }
 
@@ -538,6 +569,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         Long returnId = transactionController.insert(transaction);
         if (returnId > -1) {
             Toast.makeText(getApplicationContext(), getText(R.string.success_insert), Toast.LENGTH_LONG).show();
+            Utils.updateWidget(activity);
             try {
                 updateScreenData();
             } catch (ParseException e) {
@@ -553,6 +585,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
         if (returnId > -1) {
             Toast.makeText(getApplicationContext(), getText(R.string.success_update), Toast.LENGTH_LONG).show();
             updateScreenData();
+            Utils.updateWidget(activity);
         } else {
             Toast.makeText(getApplicationContext(), getText(R.string.error_update), Toast.LENGTH_LONG).show();
         }
@@ -628,6 +661,7 @@ public class TravelActivity extends AppCompatActivity implements TravelHistoryAd
                             Toast.makeText(getApplicationContext(), getText(R.string.success_delete), Toast.LENGTH_LONG).show();
                             try {
                                 updateScreenData();
+                                Utils.updateWidget(activity);
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }

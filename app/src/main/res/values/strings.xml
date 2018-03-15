@@ -68,5 +68,7 @@
 \nhttp://www.flaticon.com/authors/prosymbols
 \nhttp://www.flaticon.com/authors/freepik
 \nhttp://www.flaticon.com/authors/icomoon</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 
 </resources>
